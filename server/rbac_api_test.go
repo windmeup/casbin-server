@@ -17,9 +17,9 @@ package server
 import (
 	"testing"
 
-	pb "github.com/casbin/casbin-server/proto"
 	"github.com/casbin/casbin/v2/util"
 	"github.com/stretchr/testify/assert"
+	pb "github.com/windmeup/casbin-server/proto"
 )
 
 func testGetRoles(t *testing.T, e *testEngine, name string, res []string) {

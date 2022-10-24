@@ -17,7 +17,7 @@ package server
 import (
 	"context"
 
-	pb "github.com/casbin/casbin-server/proto"
+	pb "github.com/windmeup/casbin-server/proto"
 )
 
 func (s *Server) wrapPlainPolicy(policy [][]string) *pb.Array2DReply {
@@ -40,7 +40,7 @@ func (s *Server) GetAllSubjects(ctx context.Context, in *pb.EmptyRequest) (*pb.A
 }
 
 // GetAllNamedSubjects gets the list of subjects that show up in the current named policy.
-func (s *Server) GetAllNamedSubjects(ctx context.Context, in *pb.SimpleGetRequest) (*pb.ArrayReply, error) {
+func (s *Server) GetAllNamedSubjects(_ context.Context, in *pb.SimpleGetRequest) (*pb.ArrayReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.ArrayReply{}, err
@@ -55,7 +55,7 @@ func (s *Server) GetAllObjects(ctx context.Context, in *pb.EmptyRequest) (*pb.Ar
 }
 
 // GetAllNamedObjects gets the list of objects that show up in the current named policy.
-func (s *Server) GetAllNamedObjects(ctx context.Context, in *pb.SimpleGetRequest) (*pb.ArrayReply, error) {
+func (s *Server) GetAllNamedObjects(_ context.Context, in *pb.SimpleGetRequest) (*pb.ArrayReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.ArrayReply{}, err
@@ -70,7 +70,7 @@ func (s *Server) GetAllActions(ctx context.Context, in *pb.EmptyRequest) (*pb.Ar
 }
 
 // GetAllNamedActions gets the list of actions that show up in the current named policy.
-func (s *Server) GetAllNamedActions(ctx context.Context, in *pb.SimpleGetRequest) (*pb.ArrayReply, error) {
+func (s *Server) GetAllNamedActions(_ context.Context, in *pb.SimpleGetRequest) (*pb.ArrayReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.ArrayReply{}, err
@@ -85,7 +85,7 @@ func (s *Server) GetAllRoles(ctx context.Context, in *pb.EmptyRequest) (*pb.Arra
 }
 
 // GetAllNamedRoles gets the list of roles that show up in the current named policy.
-func (s *Server) GetAllNamedRoles(ctx context.Context, in *pb.SimpleGetRequest) (*pb.ArrayReply, error) {
+func (s *Server) GetAllNamedRoles(_ context.Context, in *pb.SimpleGetRequest) (*pb.ArrayReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.ArrayReply{}, err
@@ -100,7 +100,7 @@ func (s *Server) GetPolicy(ctx context.Context, in *pb.EmptyRequest) (*pb.Array2
 }
 
 // GetNamedPolicy gets all the authorization rules in the named policy.
-func (s *Server) GetNamedPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.Array2DReply, error) {
+func (s *Server) GetNamedPolicy(_ context.Context, in *pb.PolicyRequest) (*pb.Array2DReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.Array2DReply{}, err
@@ -117,7 +117,7 @@ func (s *Server) GetFilteredPolicy(ctx context.Context, in *pb.FilteredPolicyReq
 }
 
 // GetFilteredNamedPolicy gets all the authorization rules in the named policy, field filters can be specified.
-func (s *Server) GetFilteredNamedPolicy(ctx context.Context, in *pb.FilteredPolicyRequest) (*pb.Array2DReply, error) {
+func (s *Server) GetFilteredNamedPolicy(_ context.Context, in *pb.FilteredPolicyRequest) (*pb.Array2DReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.Array2DReply{}, err
@@ -132,7 +132,7 @@ func (s *Server) GetGroupingPolicy(ctx context.Context, in *pb.EmptyRequest) (*p
 }
 
 // GetNamedGroupingPolicy gets all the role inheritance rules in the policy.
-func (s *Server) GetNamedGroupingPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.Array2DReply, error) {
+func (s *Server) GetNamedGroupingPolicy(_ context.Context, in *pb.PolicyRequest) (*pb.Array2DReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.Array2DReply{}, err
@@ -149,7 +149,7 @@ func (s *Server) GetFilteredGroupingPolicy(ctx context.Context, in *pb.FilteredP
 }
 
 // GetFilteredNamedGroupingPolicy gets all the role inheritance rules in the policy, field filters can be specified.
-func (s *Server) GetFilteredNamedGroupingPolicy(ctx context.Context, in *pb.FilteredPolicyRequest) (*pb.Array2DReply, error) {
+func (s *Server) GetFilteredNamedGroupingPolicy(_ context.Context, in *pb.FilteredPolicyRequest) (*pb.Array2DReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.Array2DReply{}, err
@@ -164,7 +164,7 @@ func (s *Server) HasPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolR
 }
 
 // HasNamedPolicy determines whether a named authorization rule exists.
-func (s *Server) HasNamedPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
+func (s *Server) HasNamedPolicy(_ context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.BoolReply{}, err
@@ -180,7 +180,7 @@ func (s *Server) HasGroupingPolicy(ctx context.Context, in *pb.PolicyRequest) (*
 }
 
 // HasNamedGroupingPolicy determines whether a named role inheritance rule exists.
-func (s *Server) HasNamedGroupingPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
+func (s *Server) HasNamedGroupingPolicy(_ context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.BoolReply{}, err
@@ -194,7 +194,7 @@ func (s *Server) AddPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolR
 	return s.AddNamedPolicy(ctx, in)
 }
 
-func (s *Server) AddNamedPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
+func (s *Server) AddNamedPolicy(_ context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.BoolReply{}, err
@@ -209,7 +209,7 @@ func (s *Server) RemovePolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.Bo
 	return s.RemoveNamedPolicy(ctx, in)
 }
 
-func (s *Server) RemoveNamedPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
+func (s *Server) RemoveNamedPolicy(_ context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.BoolReply{}, err
@@ -226,7 +226,7 @@ func (s *Server) RemoveFilteredPolicy(ctx context.Context, in *pb.FilteredPolicy
 }
 
 // RemoveFilteredNamedPolicy removes an authorization rule from the current named policy, field filters can be specified.
-func (s *Server) RemoveFilteredNamedPolicy(ctx context.Context, in *pb.FilteredPolicyRequest) (*pb.BoolReply, error) {
+func (s *Server) RemoveFilteredNamedPolicy(_ context.Context, in *pb.FilteredPolicyRequest) (*pb.BoolReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.BoolReply{}, err
@@ -237,17 +237,17 @@ func (s *Server) RemoveFilteredNamedPolicy(ctx context.Context, in *pb.FilteredP
 }
 
 // AddGroupingPolicy adds a role inheritance rule to the current policy.
-// If the rule already exists, the function returns false and the rule will not be added.
-// Otherwise the function returns true by adding the new rule.
+// If the rule already exists, the function returns false and the rule will not be added,
+// otherwise the function returns true by adding the new rule.
 func (s *Server) AddGroupingPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
 	in.PType = "g"
 	return s.AddNamedGroupingPolicy(ctx, in)
 }
 
 // AddNamedGroupingPolicy adds a named role inheritance rule to the current policy.
-// If the rule already exists, the function returns false and the rule will not be added.
-// Otherwise the function returns true by adding the new rule.
-func (s *Server) AddNamedGroupingPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
+// If the rule already exists, the function returns false and the rule will not be added,
+// otherwise the function returns true by adding the new rule.
+func (s *Server) AddNamedGroupingPolicy(_ context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.BoolReply{}, err
@@ -264,7 +264,7 @@ func (s *Server) RemoveGroupingPolicy(ctx context.Context, in *pb.PolicyRequest)
 }
 
 // RemoveNamedGroupingPolicy removes a role inheritance rule from the current named policy.
-func (s *Server) RemoveNamedGroupingPolicy(ctx context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
+func (s *Server) RemoveNamedGroupingPolicy(_ context.Context, in *pb.PolicyRequest) (*pb.BoolReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.BoolReply{}, err
@@ -281,7 +281,7 @@ func (s *Server) RemoveFilteredGroupingPolicy(ctx context.Context, in *pb.Filter
 }
 
 // RemoveFilteredNamedGroupingPolicy removes a role inheritance rule from the current named policy, field filters can be specified.
-func (s *Server) RemoveFilteredNamedGroupingPolicy(ctx context.Context, in *pb.FilteredPolicyRequest) (*pb.BoolReply, error) {
+func (s *Server) RemoveFilteredNamedGroupingPolicy(_ context.Context, in *pb.FilteredPolicyRequest) (*pb.BoolReply, error) {
 	e, err := s.getEnforcer(int(in.EnforcerHandler))
 	if err != nil {
 		return &pb.BoolReply{}, err

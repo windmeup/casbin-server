@@ -17,15 +17,15 @@ package server
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	"io/fs"
 	"os"
 	"regexp"
 	"strings"
 
-	pb "github.com/casbin/casbin-server/proto"
 	"github.com/casbin/casbin/v2/persist"
-	fileadapter "github.com/casbin/casbin/v2/persist/file-adapter"
-	gormadapter "github.com/casbin/gorm-adapter/v2"
+	fileAdapter "github.com/casbin/casbin/v2/persist/file-adapter"
+	gormAdapter "github.com/casbin/gorm-adapter/v2"
+	pb "github.com/windmeup/casbin-server/proto"
 	//_ "github.com/jinzhu/gorm/dialects/mssql"
 	//_ "github.com/jinzhu/gorm/dialects/mysql"
 	//_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -35,12 +35,15 @@ var errDriverName = errors.New("currently supported DriverName: file | mysql | p
 
 func newAdapter(in *pb.NewAdapterRequest) (persist.Adapter, error) {
 	var a persist.Adapter
-	in = checkLocalConfig(in)
+	in, err := checkLocalConfig(in)
+	if err != nil {
+		return nil, err
+	}
 	supportDriverNames := [...]string{"file", "mysql", "postgres", "mssql"}
 
 	switch in.DriverName {
 	case "file":
-		a = fileadapter.NewAdapter(in.ConnectString)
+		a = fileAdapter.NewAdapter(in.ConnectString)
 	default:
 		var support = false
 		for _, driverName := range supportDriverNames {
@@ -54,7 +57,7 @@ func newAdapter(in *pb.NewAdapterRequest) (persist.Adapter, error) {
 		}
 
 		var err error
-		a, err = gormadapter.NewAdapter(in.DriverName, in.ConnectString, in.DbSpecified)
+		a, err = gormAdapter.NewAdapter(in.DriverName, in.ConnectString, in.DbSpecified)
 		if err != nil {
 			return nil, err
 		}
@@ -63,14 +66,17 @@ func newAdapter(in *pb.NewAdapterRequest) (persist.Adapter, error) {
 	return a, nil
 }
 
-func checkLocalConfig(in *pb.NewAdapterRequest) *pb.NewAdapterRequest {
-	cfg := LoadConfiguration(getLocalConfigPath())
+func checkLocalConfig(in *pb.NewAdapterRequest) (*pb.NewAdapterRequest, error) {
+	cfg, err := LoadConfiguration(getLocalConfigPath())
+	if err != nil {
+		return nil, err
+	}
 	if in.ConnectString == "" || in.DriverName == "" {
 		in.DriverName = cfg.Driver
 		in.ConnectString = cfg.Connection
 		in.DbSpecified = cfg.DBSpecified
 	}
-	return in
+	return in, nil
 }
 
 const (
@@ -86,23 +92,26 @@ func getLocalConfigPath() string {
 	return configFilePath
 }
 
-func LoadConfiguration(file string) Config {
+func LoadConfiguration(file string) (*Config, error) {
 	//Loads a default config from adapter_config in case a custom adapter isn't provided by the client.
 	//DriverName, ConnectionString, and dbSpecified can be configured in the file. Defaults to 'file' mode.
-
+	c := new(Config)
 	configFile, err := os.Open(file)
 	if err != nil {
-		fmt.Println(err.Error())
+		if errors.Is(err, fs.ErrNotExist) { // allow config file not exists
+			return c, nil
+		}
+		return nil, err
 	}
 	decoder := json.NewDecoder(configFile)
-	config := Config{}
-	decoder.Decode(&config)
-	re := regexp.MustCompile(`\$\b((\w*))\b`)
-	config.Connection = re.ReplaceAllStringFunc(config.Connection, func(s string) string {
+	if err := decoder.Decode(c); err != nil {
+		return nil, err
+	}
+	re := regexp.MustCompile(`\$\b(\w*)\b`)
+	c.Connection = re.ReplaceAllStringFunc(c.Connection, func(s string) string {
 		return os.Getenv(strings.TrimPrefix(s, `$`))
 	})
-
-	return config
+	return c, nil
 }
 
 type Config struct {

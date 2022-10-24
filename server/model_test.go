@@ -16,11 +16,11 @@ package server
 
 import (
 	"context"
-	"io/ioutil"
+	"os"
 	"testing"
 
-	pb "github.com/casbin/casbin-server/proto"
 	"github.com/stretchr/testify/assert"
+	pb "github.com/windmeup/casbin-server/proto"
 )
 
 func testEnforce(t *testing.T, e *testEngine, sub string, obj string, act string, res bool) {
@@ -54,7 +54,7 @@ func TestRBACModel(t *testing.T) {
 		t.Error(err)
 	}
 
-	modelText, err := ioutil.ReadFile("../examples/rbac_model.conf")
+	modelText, err := os.ReadFile("../examples/rbac_model.conf")
 	if err != nil {
 		t.Error(err)
 	}
@@ -68,7 +68,6 @@ func TestRBACModel(t *testing.T) {
 	sub := "alice"
 	obj := "data1"
 	act := "read"
-	res := true
 
 	resp2, err := s.Enforce(ctx, &pb.EnforceRequest{EnforcerHandler: e, Params: []string{sub, obj, act}})
 	if err != nil {
@@ -76,8 +75,8 @@ func TestRBACModel(t *testing.T) {
 	}
 	myRes := resp2.Res
 
-	if myRes != res {
-		t.Errorf("%s, %s, %s: %t, supposed to be %t", sub, obj, act, myRes, res)
+	if myRes != true {
+		t.Errorf("%s, %s, %s: %t, supposed to be true", sub, obj, act, myRes)
 	}
 }
 
@@ -85,7 +84,7 @@ func TestABACModel(t *testing.T) {
 	s := NewServer()
 	ctx := context.Background()
 
-	modelText, err := ioutil.ReadFile("../examples/abac_model.conf")
+	modelText, err := os.ReadFile("../examples/abac_model.conf")
 	if err != nil {
 		t.Error(err)
 	}

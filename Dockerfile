@@ -1,4 +1,4 @@
-FROM golang:1.16
+FROM golang:1.19
 
 RUN apt-get update && \
     apt-get -y install git unzip build-essential autoconf libtool
@@ -26,8 +26,8 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 # Copy the source and generate the .proto file
-ADD . /go/src/github.com/casbin/casbin-server
-WORKDIR $GOPATH/src/github.com/casbin/casbin-server
+ADD . /go/src/github.com/windmeup/casbin-server
+WORKDIR $GOPATH/src/github.com/windmeup/casbin-server
 RUN protoc --go_out=. --go_opt=paths=source_relative \
     --go-grpc_out=. --go-grpc_opt=require_unimplemented_servers=false \
     --go-grpc_opt=paths=source_relative proto/casbin.proto

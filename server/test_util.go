@@ -16,10 +16,10 @@ package server
 
 import (
 	"context"
-	"io/ioutil"
+	"os"
 	"testing"
 
-	pb "github.com/casbin/casbin-server/proto"
+	pb "github.com/windmeup/casbin-server/proto"
 )
 
 type testEngine struct {
@@ -37,7 +37,7 @@ func newTestEngine(t *testing.T, from, connectStr string, modelLoc string) *test
 		t.Fatal(err)
 	}
 
-	modelText, err := ioutil.ReadFile(modelLoc)
+	modelText, err := os.ReadFile(modelLoc)
 	if err != nil {
 		t.Fatal(err)
 	}
